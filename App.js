@@ -49,7 +49,8 @@ export default function App() {
   const add = useCallback((name) => {
     const newItem = {
       id: uuidv4(),
-      name: name
+      name: name,
+      completed: false,
     }
     const tempData = [...data, newItem]
     setData(tempData)
@@ -59,9 +60,16 @@ export default function App() {
     setSelectedId(id);
   };
 
+  const toggleCompletion = (id) => {
+    setData((prevData) =>
+        prevData.map((item) =>
+            item.id === id ? { ...item, completed: !item.completed } : item
+        )
+    );
+};
+
   return (
     <SafeAreaView style={styles.container}>
-
       <GestureHandlerRootView>
         <Text style={styles.header}>Todo List</Text>
         <Add add={add} />
@@ -72,10 +80,7 @@ export default function App() {
           renderItem={({ item }) => (
             <Row
               item={item}
-              selectedId={selectedId}
-              select={select}
-              data={data}
-              setData={setData}
+              toggleCompletion={toggleCompletion}
             />
           )}
         />
