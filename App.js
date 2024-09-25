@@ -7,50 +7,22 @@ import { v4 as uuidv4 } from 'uuid'
 import Constants from 'expo-constants';
 import Row from './components/Row';
 import Add from './components/Add';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const STORAGE_KEY = '@items-key'
+import { getData, storeData } from './storage/AsyncStorage';
 
 export default function App() {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    getData()
-  }, [])
+    const fetchData = async () => {
+      const items = await getData();
+      setData(items);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    storeData(data)
-  }, [data])
-
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem(STORAGE_KEY)
-      const json = JSON.parse(value)
-      if (json === null) {
-        json = []
-      }
-      setData(json)
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
-  const storeData = async (value) => {
-    try {
-      const json = JSON.stringify(value)
-      await AsyncStorage.setItem(STORAGE_KEY, json)
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
-  const clearData = async () => {
-    try {
-      await AsyncStorage.removeItem(STORAGE_KEY)
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
+    storeData(data);
+  }, [data]);
 
   const add = useCallback((name) => {
     const newItem = {
