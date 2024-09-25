@@ -22,6 +22,5 @@ const styles = StyleSheet.create({
     },
     completed: {
         textDecorationLine: 'line-through',
-        color: 'grey',
     },
 });

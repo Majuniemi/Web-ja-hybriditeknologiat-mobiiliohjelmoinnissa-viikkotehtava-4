@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values'
@@ -9,12 +9,10 @@ import Row from './components/Row';
 import Add from './components/Add';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const STORAGE_KEY = '@items-key'
 
 export default function App() {
   const [data, setData] = useState([])
-  const [selectedId, setSelectedId] = useState(null)
 
   useEffect(() => {
     getData()
@@ -46,6 +44,14 @@ export default function App() {
     }
   }
 
+  const clearData = async () => {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY)
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
   const add = useCallback((name) => {
     const newItem = {
       id: uuidv4(),
@@ -56,27 +62,23 @@ export default function App() {
     setData(tempData)
   }, [data])
 
-  const select = (id) => {
-    setSelectedId(id);
-  };
-
   const toggleCompletion = (id) => {
     setData((prevData) =>
-        prevData.map((item) =>
-            item.id === id ? { ...item, completed: !item.completed } : item
-        )
+      prevData.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
     );
-};
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
       <GestureHandlerRootView>
         <Text style={styles.header}>Todo List</Text>
         <Add add={add} />
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
-          extraData={selectedId}
           renderItem={({ item }) => (
             <Row
               item={item}
