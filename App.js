@@ -11,7 +11,7 @@ import { getData, storeData } from './storage/AsyncStorage';
 
 export default function App() {
   const [data, setData] = useState([])
-
+  
   useEffect(() => {
     const fetchData = async () => {
       const items = await getData();
@@ -46,7 +46,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <GestureHandlerRootView>
-        <Text style={styles.header}>Todo List</Text>
+        <Text style={styles.header}>Todo list</Text>
         <Add add={add} />
         <FlatList
           data={data}
